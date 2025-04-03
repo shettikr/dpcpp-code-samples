@@ -37,12 +37,12 @@ size_t vector_size = 1000000000;
 typedef std::vector<int> IntVector; 
 
 // Create an exception handler for asynchronous SYCL exceptions
-static auto exception_handler = [](sycl::exception_list e_list) {
+static auto exception_handler = [](sycl::exception_list e_list) 
+{
   for (std::exception_ptr const &e : e_list) {
-    try {
+    try{
       std::rethrow_exception(e);
-    }
-    catch (std::exception const &e) {
+    }catch (std::exception const &e) {
 #if _DEBUG
       std::cout << "Failure" << std::endl;
 #endif
@@ -55,7 +55,8 @@ static auto exception_handler = [](sycl::exception_list e_list) {
 // Vector add in SYCL on device: returns sum in 4th parameter "sum_parallel".
 //************************************
 void VectorAdd(queue &q, const IntVector &a_vector, const IntVector &b_vector,
-               IntVector &sum_parallel) {
+               IntVector &sum_parallel) 
+{
   // Create the range object for the vectors managed by the buffer.
   range<1> num_items{a_vector.size()};
 
@@ -95,14 +96,16 @@ void VectorAdd(queue &q, const IntVector &a_vector, const IntVector &b_vector,
 //************************************
 // Initialize the vector from 0 to vector_size - 1
 //************************************
-void InitializeVector(IntVector &a) {
+void InitializeVector(IntVector &a) 
+{
   for (size_t i = 0; i < a.size(); i++) a.at(i) = i;
 }
 
 //************************************
 // Demonstrate vector add both in sequential on CPU and in parallel on device.
 //************************************
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) 
+{
   // Change num_repetitions if it was passed as argument
   if (argc > 2) num_repetitions = std::stoi(argv[2]);
   // Change vector_size if it was passed as argument
@@ -134,7 +137,7 @@ int main(int argc, char* argv[]) {
   InitializeVector(a);
   InitializeVector(b);
 
-  try {
+  try{
     queue q(selector, exception_handler);
 
     // Print out the device information used for the kernel code.
@@ -174,7 +177,8 @@ int main(int argc, char* argv[]) {
   // Print out the result of vector add.
   for (int i = 0; i < indices_size; i++) {
     int j = indices[i];
-    if (i == indices_size - 1) std::cout << "...\n";
+    if (i == indices_size - 1) 
+      std::cout << "...\n";
     std::cout << "[" << j << "]: " << a[j] << " + " << b[j] << " = "
               << sum_parallel[j] << "\n";
   }
@@ -185,5 +189,6 @@ int main(int argc, char* argv[]) {
   sum_parallel.clear();
 
   std::cout << "Vector add successfully completed on device.\n";
+
   return 0;
 }
